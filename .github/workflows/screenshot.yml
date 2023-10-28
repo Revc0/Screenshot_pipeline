@@ -26,7 +26,7 @@ jobs:
       - name: Start development server in the background
         run: |
           npm start &
-          sleep 60  # Give it a minute to start up
+          sleep 60  # Give it a minute to start up.
 
       - name: Capture screenshot
         run: node screenshot.js
@@ -37,9 +37,7 @@ jobs:
           git config --local user.name "GitHub Action"
           git add screenshot.png
           git commit -m "Update screenshot" || echo "No changes to commit"
-          git push https://${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}} HEAD:main
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          git push https://${{secrets.GH_PAT}}@github.com/${{github.repository}} HEAD:main
 
       # Optional: Kill the server
       - name: Kill development server
