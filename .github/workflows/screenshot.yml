@@ -28,6 +28,12 @@ jobs:
           npm start &
           sleep 60  # Give it a minute to start up.
 
+      - name: Set up Git with PAT authentication
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git remote set-url origin https://${{secrets.GH_PAT}}@github.com/Revc0/Screenshot_pipeline.git
+      
       - name: Capture screenshot
         run: node screenshot.js
 
