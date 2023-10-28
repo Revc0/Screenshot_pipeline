@@ -12,7 +12,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      
+        with:
+          persist-credentials: false
+
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
@@ -21,16 +23,13 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Start the app in the background
+      - name: Start development server in the background
         run: |
           npm start &
-          sleep 10 # Give the server some time to start
+          sleep 60  # Give it a minute to start up
 
       - name: Capture screenshot
         run: node screenshot.js
-
-      - name: Kill the app
-        run: pkill node
 
       - name: Commit and push screenshot
         run: |
@@ -38,4 +37,10 @@ jobs:
           git config --local user.name "GitHub Action"
           git add screenshot.png
           git commit -m "Update screenshot" || echo "No changes to commit"
-          git push
+          git push https://${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}} HEAD:main
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      # Optional: Kill the server
+      - name: Kill development server
+        run: pkill node
